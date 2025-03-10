@@ -5,7 +5,7 @@ export class ReviewResponseDto {
   author: string;
   content: string;
   rating: number;
-  createdAt: Date;
+  createdAt: string;
 }
 
 export class CreateReviewDto {
