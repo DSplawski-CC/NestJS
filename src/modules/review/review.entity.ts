@@ -1,5 +1,5 @@
 export class ReviewEntity {
-  id: string;
+  id: number;
   movieId: number;
   title: string;
   author: string;
