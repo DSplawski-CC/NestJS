@@ -1,15 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { ReviewEntity } from '@modules/review/review.entity';
-import { ApiNoContentResponse } from '@nestjs/swagger';
 
 @Injectable()
 export class ReviewService {
   moviesReviewsMap = new Map<number, ReviewEntity[]>([
     [
-      1249289, [
+      927342, [
       {
         id: 1,
-        movieId: 1249289,
+        movieId: 927342,
         title: 'Made my day',
         author: 'Mike',
         content: 'Really good action movie',
@@ -18,7 +17,7 @@ export class ReviewService {
       },
       {
         id: 2,
-        movieId: 1249289,
+        movieId: 927342,
         title: 'Best dialogues ever!',
         author: 'Jason',
         content: 'I had fun watching this movie. The dialogs between main characters is essential part',
