@@ -1,23 +1,16 @@
-import { Controller, Get, NotFoundException, Param, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
 import { ReviewService } from '@modules/review/review.service';
 import { ReviewResponseDto } from '@modules/review/review.dto';
 import { plainToInstance } from 'class-transformer';
 
 
-@Controller('review')
+@Controller('movies/:movieId/reviews')
 export class ReviewController {
   constructor(private readonly reviewService: ReviewService) {}
 
-  @Get('reviews/:movieId')
+  @Get()
   public getReviews(@Param('movieId', ParseIntPipe) movieId: number): ReviewResponseDto[] {
-    let reviewEntities: ReviewResponseDto[] = [];
-    try {
-      reviewEntities = this.reviewService.getReviews(movieId);
-    } catch (error) {
-      if (error instanceof NotFoundException) {
-        throw error;
-      }
-    }
+    let reviewEntities: ReviewResponseDto[] = this.reviewService.getReviews(movieId);
 
     return plainToInstance(ReviewResponseDto, reviewEntities);
   }
