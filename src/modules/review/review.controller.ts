@@ -32,8 +32,6 @@ export class ReviewController {
     @Param('movieId', ParseIntPipe) movieId: number,
     @Body() createReviewDto: CreateReviewDto,
   ): ReviewResponseDto {
-
-
     const review = plainToInstance(ReviewEntity, createReviewDto);
     review.id = this.reviewService.generateReviewId(movieId);
     review.createdAt = new Date().toISOString();
