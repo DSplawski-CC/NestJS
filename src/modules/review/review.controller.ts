@@ -1,6 +1,6 @@
-import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Post } from '@nestjs/common';
 import { ReviewService } from '@modules/review/review.service';
-import { ReviewResponseDto } from '@modules/review/review.dto';
+import { CreateReviewDto, ReviewResponseDto } from '@modules/review/review.dto';
 import { plainToInstance } from 'class-transformer';
 import { ReviewEntity } from '@modules/review/review.entity';
 
@@ -24,5 +24,21 @@ export class ReviewController {
     const reviewEntity: ReviewEntity = this.reviewService.getReview(movieId, reviewId);
 
     return plainToInstance(ReviewResponseDto, reviewEntity);
+  }
+
+  @Post()
+  @HttpCode(HttpStatus.CREATED)
+  public createReview(
+    @Param('movieId', ParseIntPipe) movieId: number,
+    @Body() createReviewDto: CreateReviewDto,
+  ): ReviewResponseDto {
+
+
+    const review = plainToInstance(ReviewEntity, createReviewDto);
+    review.id = this.reviewService.generateReviewId(movieId);
+    review.createdAt = new Date().toISOString();
+    this.reviewService.addReview(movieId, review);
+
+    return plainToInstance(ReviewResponseDto, review);
   }
 }

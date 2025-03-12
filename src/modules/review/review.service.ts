@@ -27,6 +27,14 @@ export class ReviewService {
     ]
   ]);
 
+  public generateReviewId(movieId: number): number {
+    if (!this.moviesReviewsMap.has(movieId)) {
+      throw new NotFoundException('Movie not found');
+    }
+
+    return this.moviesReviewsMap.get(movieId)!.length + 1;
+  }
+
   public getReviews(movieId: number): ReviewEntity[] {
     if (!this.moviesReviewsMap.has(movieId)) {
       throw new NotFoundException('Movie not found');
@@ -41,6 +49,12 @@ export class ReviewService {
     if (!review) {
       throw new NotFoundException('Review not found');
     }
+
+    return review;
+  }
+
+  public addReview(movieId: number, review: ReviewEntity) {
+    this.getReviews(movieId).push(review);
 
     return review;
   }
