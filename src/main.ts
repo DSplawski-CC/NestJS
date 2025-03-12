@@ -17,6 +17,8 @@ async function bootstrap() {
     jsonDocumentUrl: 'swagger/json',
   });
 
+  app.enableCors();
+
   await app.listen(process.env.PORT ?? 3000);
 }
 
