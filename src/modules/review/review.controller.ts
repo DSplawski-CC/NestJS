@@ -3,17 +3,23 @@ import { ReviewService } from '@modules/review/review.service';
 import { CreateReviewDto, ReviewResponseDto } from '@modules/review/review.dto';
 import { plainToInstance } from 'class-transformer';
 import { ReviewEntity } from '@modules/review/review.entity';
+import { UserService } from '@modules/user/user.service';
 
 
 @Controller('movies/:movieId/reviews')
 export class ReviewController {
-  constructor(private readonly reviewService: ReviewService) {}
+  constructor(
+    private readonly reviewService: ReviewService,
+    private readonly userService: UserService,
+  ) {}
 
   @Get()
   public getReviews(@Param('movieId', ParseIntPipe) movieId: number): ReviewResponseDto[] {
     let reviewEntities: ReviewEntity[] = this.reviewService.getReviews(movieId);
+    const reviewsDto = plainToInstance(ReviewResponseDto, reviewEntities);
+    reviewsDto.forEach((reviewDto, index) =>  reviewDto.author = this.userService.getUser(reviewEntities[index].userId).name)
 
-    return plainToInstance(ReviewResponseDto, reviewEntities);
+    return reviewsDto;
   }
 
   @Get(':reviewId')
@@ -22,8 +28,10 @@ export class ReviewController {
     @Param('reviewId', ParseIntPipe) reviewId: number,
   ): ReviewResponseDto {
     const reviewEntity: ReviewEntity = this.reviewService.getReview(movieId, reviewId);
+    const reviewDto = plainToInstance(ReviewResponseDto, reviewEntity);
+    reviewDto.author = this.userService.getUser(reviewEntity.userId).name;
 
-    return plainToInstance(ReviewResponseDto, reviewEntity);
+    return reviewDto;
   }
 
   @Post()
