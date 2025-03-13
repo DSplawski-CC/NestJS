@@ -1,19 +1,33 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { UserEntity } from '@modules/user/user.entity';
+import { CreateUserDto, UserResponseDto } from '@modules/user/user.dto';
+import { plainToInstance } from 'class-transformer';
 
 
 @Injectable()
 export class UserService {
   private readonly users = new Map<string, UserEntity>([
-    ['a5db44cc-2794-443f-b963-bb1de227af2e', { id: 'a5db44cc-2794-443f-b963-bb1de227af2e', name: 'Mike', email: 'mike@mike.com' }],
-    ['4905c177-b02b-4392-8788-4ec0486432fa', { id: '4905c177-b02b-4392-8788-4ec0486432fa', name: 'Jason', email: 'jason@jason.com' }],
+    ['mike@mike.com', { name: 'Mike', email: 'mike@mike.com' }],
+    ['jason@jason.com', {  name: 'Jason', email: 'jason@jason.com' }],
   ]);
 
-  getUser(id: string): UserEntity {
-    if (!this.users.has(id)) {
-      throw new NotFoundException(`User with id ${id} not found`);
+  getUser(email: string) {
+    if (!this.users.has(email)) {
+      throw new NotFoundException(`User with email ${email} not found`);
     }
 
-    return this.users.get(id)!;
+    const userEntity = this.users.get(email)!;
+    return plainToInstance(UserResponseDto, userEntity);
+  }
+
+  addUser(user: CreateUserDto) {
+    if (this.users.has(user.email)) {
+      throw new ConflictException(`User with email ${user.email} not found`);
+    }
+
+    const userEntity = plainToInstance(UserEntity, user);
+    this.users.set(userEntity.email, userEntity);
+
+    return plainToInstance(UserResponseDto, userEntity);
   }
 }

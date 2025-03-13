@@ -1,5 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { ReviewEntity } from '@modules/review/review.entity';
+import { CreateReviewDto, ReviewResponseDto } from '@modules/review/review.dto';
+import { plainToInstance } from 'class-transformer';
+import { UserService } from '@modules/user/user.service';
 
 @Injectable()
 export class ReviewService {
@@ -10,7 +13,7 @@ export class ReviewService {
         id: 1,
         movieId: 927342,
         title: 'Made my day',
-        userId: '4905c177-b02b-4392-8788-4ec0486432fa',
+        email: 'mike@mike.com',
         content: 'Really good action movie',
         rating: 7.5,
         createdAt: '2018-06-01',
@@ -19,7 +22,7 @@ export class ReviewService {
         id: 2,
         movieId: 927342,
         title: 'Best dialogues ever!',
-        userId: '4905c177-b02b-4392-8788-4ec0486432fa',
+        email: 'jason@jason.com',
         content: 'I had fun watching this movie. The dialogs between main characters is essential part',
         rating: 6.8,
         createdAt: '2018-04-21',
@@ -27,35 +30,54 @@ export class ReviewService {
     ]
   ]);
 
-  public generateReviewId(movieId: number): number {
-    if (!this.moviesReviewsMap.has(movieId)) {
-      throw new NotFoundException('Movie not found');
-    }
+  constructor(private readonly userService: UserService) {}
 
-    return this.moviesReviewsMap.get(movieId)!.length + 1;
+  public generateReviewId(movieId: number): number {
+    return this.getReviews(movieId)!.length + 1;
   }
 
   public getReviews(movieId: number): ReviewEntity[] {
     if (!this.moviesReviewsMap.has(movieId)) {
-      throw new NotFoundException('Movie not found');
+      this.moviesReviewsMap.set(movieId, []);
     }
-
     return this.moviesReviewsMap.get(movieId)!;
   }
 
   public getReview(movieId: number, reviewId: number) {
-    const review = this.getReviews(movieId).find(review => review.id === reviewId);
+    const reviewEntity = this.getReviews(movieId).find(review => review.id === reviewId);
 
-    if (!review) {
+    if (!reviewEntity) {
       throw new NotFoundException('Review not found');
     }
 
-    return review;
+    const reviewDto = plainToInstance(ReviewResponseDto, reviewEntity);
+    const userResponseDto = this.userService.getUser(reviewEntity.email);
+    reviewDto.author = userResponseDto.name;
+    reviewDto.email = userResponseDto.email;
+
+    return reviewDto;
   }
 
-  public addReview(movieId: number, review: ReviewEntity) {
-    this.getReviews(movieId).push(review);
+  public addReview(movieId: number, reviewDto: CreateReviewDto) {
+    const reviews = this.getReviews(movieId);
 
-    return review;
+    if (reviews.find(el => el.email === reviewDto.email)) {
+      throw new ConflictException(`User with email "${reviewDto.email}" already posted review`);
+    }
+
+    const review = plainToInstance(ReviewEntity, reviewDto);
+    review.id = this.generateReviewId(movieId);
+    review.createdAt = new Date().toISOString();
+
+    try {
+      this.userService.addUser({
+        name: reviewDto.author,
+        email: reviewDto.email,
+      });
+    } catch (e) {
+    }
+
+    reviews.push(review);
+    return plainToInstance(ReviewResponseDto, review);
   }
 }

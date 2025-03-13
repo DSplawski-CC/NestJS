@@ -3,6 +3,7 @@ export class ReviewResponseDto {
   movieId: number;
   title: string;
   author: string;
+  email: string;
   content: string;
   rating: number;
   createdAt: string;
@@ -12,6 +13,7 @@ export class CreateReviewDto {
   movieId: number;
   title: string;
   author: string;
+  email: string;
   content: string;
   rating: number;
 }
@@ -21,6 +23,7 @@ export class UpdateReviewDto {
   movieId: number;
   title: string;
   author: string;
+  email: string;
   content: string;
   rating: number;
 }

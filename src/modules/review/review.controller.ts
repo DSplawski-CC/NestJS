@@ -17,7 +17,7 @@ export class ReviewController {
   public getReviews(@Param('movieId', ParseIntPipe) movieId: number): ReviewResponseDto[] {
     let reviewEntities: ReviewEntity[] = this.reviewService.getReviews(movieId);
     const reviewsDto = plainToInstance(ReviewResponseDto, reviewEntities);
-    reviewsDto.forEach((reviewDto, index) =>  reviewDto.author = this.userService.getUser(reviewEntities[index].userId).name)
+    reviewsDto.forEach((reviewDto, index) =>  reviewDto.author = this.userService.getUser(reviewEntities[index].email).name)
 
     return reviewsDto;
   }
@@ -27,11 +27,7 @@ export class ReviewController {
     @Param('movieId', ParseIntPipe) movieId: number,
     @Param('reviewId', ParseIntPipe) reviewId: number,
   ): ReviewResponseDto {
-    const reviewEntity: ReviewEntity = this.reviewService.getReview(movieId, reviewId);
-    const reviewDto = plainToInstance(ReviewResponseDto, reviewEntity);
-    reviewDto.author = this.userService.getUser(reviewEntity.userId).name;
-
-    return reviewDto;
+    return this.reviewService.getReview(movieId, reviewId);
   }
 
   @Post()
@@ -40,11 +36,6 @@ export class ReviewController {
     @Param('movieId', ParseIntPipe) movieId: number,
     @Body() createReviewDto: CreateReviewDto,
   ): ReviewResponseDto {
-    const review = plainToInstance(ReviewEntity, createReviewDto);
-    review.id = this.reviewService.generateReviewId(movieId);
-    review.createdAt = new Date().toISOString();
-    this.reviewService.addReview(movieId, review);
-
-    return plainToInstance(ReviewResponseDto, review);
+    return this.reviewService.addReview(movieId, createReviewDto);
   }
 }
