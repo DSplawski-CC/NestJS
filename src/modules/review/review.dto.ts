@@ -1,8 +1,12 @@
+import { IsEmail } from 'class-validator';
+
+
 export class ReviewResponseDto {
   id: string;
   movieId: number;
   title: string;
   author: string;
+  @IsEmail()
   email: string;
   content: string;
   rating: number;
@@ -13,6 +17,7 @@ export class CreateReviewDto {
   movieId: number;
   title: string;
   author: string;
+  @IsEmail()
   email: string;
   content: string;
   rating: number;
@@ -23,6 +28,7 @@ export class UpdateReviewDto {
   movieId: number;
   title: string;
   author: string;
+  @IsEmail()
   email: string;
   content: string;
   rating: number;
