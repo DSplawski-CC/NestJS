@@ -1,6 +1,8 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { ValidationPipe } from '@nestjs/common';
+import { AuthorizationGuard } from './core/guards/authorization.guard';
 
 
 async function bootstrap() {
@@ -18,6 +20,10 @@ async function bootstrap() {
   });
 
   app.enableCors();
+  app.useGlobalGuards(new AuthorizationGuard());
+  app.useGlobalPipes(new ValidationPipe({
+    transform: true,
+  }));
 
   await app.listen(process.env.PORT ?? 3000);
 }
