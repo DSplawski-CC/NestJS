@@ -1,83 +1,55 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ReviewEntity } from '@modules/review/review.entity';
 import { CreateReviewDto, ReviewResponseDto } from '@modules/review/review.dto';
 import { plainToInstance } from 'class-transformer';
 import { UserService } from '@modules/user/user.service';
+import { PrismaService } from 'nestjs-prisma';
+
 
 @Injectable()
 export class ReviewService {
-  moviesReviewsMap = new Map<number, ReviewEntity[]>([
-    [
-      927342, [
-      {
-        id: 1,
-        movieId: 927342,
-        title: 'Made my day',
-        email: 'mike@mike.com',
-        content: 'Really good action movie',
-        rating: 7.5,
-        createdAt: '2018-06-01',
-      },
-      {
-        id: 2,
-        movieId: 927342,
-        title: 'Best dialogues ever!',
-        email: 'jason@jason.com',
-        content: 'I had fun watching this movie. The dialogs between main characters is essential part',
-        rating: 6.8,
-        createdAt: '2018-04-21',
-      }]
-    ]
-  ]);
+  constructor(
+    private prisma: PrismaService,
+    private readonly userService: UserService
+  ) {}
 
-  constructor(private readonly userService: UserService) {}
+  public async getReviews(movieId: number) {
+    const reviews = await this.prisma.review.findMany({
+      where: { movieId },
+      include: {
+        user: true,
+      }
+    });
 
-  public generateReviewId(movieId: number): number {
-    return this.getReviews(movieId)!.length + 1;
+    return plainToInstance(ReviewResponseDto, reviews, { excludeExtraneousValues: true });
   }
 
-  public getReviews(movieId: number): ReviewEntity[] {
-    if (!this.moviesReviewsMap.has(movieId)) {
-      this.moviesReviewsMap.set(movieId, []);
-    }
-    return this.moviesReviewsMap.get(movieId)!;
+  public async getReview(movieId: number, reviewId: number) {
+    const review = await this.prisma.review.findUniqueOrThrow({
+      where: { movieId: movieId, id: reviewId },
+      include: {
+        user: true,
+      }
+    });
+
+    return plainToInstance(ReviewResponseDto, review, { excludeExtraneousValues: true });
   }
 
-  public getReview(movieId: number, reviewId: number) {
-    const reviewEntity = this.getReviews(movieId).find(review => review.id === reviewId);
+  public async addReview(movieId: number, reviewDto: CreateReviewDto) {
+    await this.userService.addUser({
+      name: reviewDto.author,
+      email: reviewDto.email,
+    });
 
-    if (!reviewEntity) {
-      throw new NotFoundException('Review not found');
-    }
+    const reviewEntity = plainToInstance(ReviewEntity, reviewDto, { excludeExtraneousValues: true });
 
-    const reviewDto = plainToInstance(ReviewResponseDto, reviewEntity);
-    const userResponseDto = this.userService.getUser(reviewEntity.email);
-    reviewDto.author = userResponseDto.name;
-    reviewDto.email = userResponseDto.email;
+    const review = await this.prisma.review.create({
+      data: reviewEntity,
+      include: {
+        user: true,
+      }
+    });
 
-    return reviewDto;
-  }
-
-  public addReview(movieId: number, reviewDto: CreateReviewDto) {
-    const reviews = this.getReviews(movieId);
-
-    if (reviews.find(el => el.email === reviewDto.email)) {
-      throw new ConflictException(`User with email "${reviewDto.email}" already posted review`);
-    }
-
-    const review = plainToInstance(ReviewEntity, reviewDto);
-    review.id = this.generateReviewId(movieId);
-    review.createdAt = new Date().toISOString();
-
-    try {
-      this.userService.addUser({
-        name: reviewDto.author,
-        email: reviewDto.email,
-      });
-    } catch (e) {
-    }
-
-    reviews.push(review);
-    return plainToInstance(ReviewResponseDto, review);
+    return plainToInstance(ReviewResponseDto, review, { excludeExtraneousValues: true });
   }
 }
