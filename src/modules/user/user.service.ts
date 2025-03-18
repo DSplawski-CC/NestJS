@@ -1,33 +1,30 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
-import { UserEntity } from '@modules/user/user.entity';
+import { Injectable } from '@nestjs/common';
 import { CreateUserDto, UserResponseDto } from '@modules/user/user.dto';
 import { plainToInstance } from 'class-transformer';
+import { User } from '@prisma/client';
+import { PrismaService } from 'nestjs-prisma';
 
 
 @Injectable()
 export class UserService {
-  private readonly users = new Map<string, UserEntity>([
-    ['mike@mike.com', { name: 'Mike', email: 'mike@mike.com' }],
-    ['jason@jason.com', {  name: 'Jason', email: 'jason@jason.com' }],
-  ]);
-
-  getUser(email: string) {
-    if (!this.users.has(email)) {
-      throw new NotFoundException(`User with email ${email} not found`);
-    }
-
-    const userEntity = this.users.get(email)!;
-    return plainToInstance(UserResponseDto, userEntity);
+  constructor(private prisma: PrismaService) {
   }
 
-  addUser(user: CreateUserDto) {
-    if (this.users.has(user.email)) {
-      throw new ConflictException(`User with email ${user.email} not found`);
-    }
+  async getUser(email: string) {
+    const user = await this.prisma.user.findUniqueOrThrow({
+      where: { email },
+    });
 
-    const userEntity = plainToInstance(UserEntity, user);
-    this.users.set(userEntity.email, userEntity);
+    return plainToInstance(UserResponseDto, user);
+  }
 
-    return plainToInstance(UserResponseDto, userEntity);
+  async addUser(createdUser: CreateUserDto) {
+    let user: User
+
+    user = await this.prisma.user.create({
+      data: createdUser
+    })
+
+    return plainToInstance(UserResponseDto, user);
   }
 }
