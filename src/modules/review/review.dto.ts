@@ -1,6 +1,19 @@
-import { IsEmail } from 'class-validator';
-import { Expose, Transform } from 'class-transformer';
+import { IsEmail, Max, MaxLength, Min, MinLength, ValidateNested } from 'class-validator';
+import { Exclude, Expose, Transform, Type } from 'class-transformer';
 
+
+export class UserInReviewDto {
+  @IsEmail()
+  email: string;
+
+  @MinLength(3)
+  @MaxLength(10)
+  name: string;
+
+  constructor(user: Partial<UserInReviewDto>) {
+    Object.assign(this, user);
+  }
+}
 
 export class ReviewResponseDto {
   @Expose()
@@ -9,12 +22,13 @@ export class ReviewResponseDto {
   movieId: number;
   @Expose()
   title: string;
-  @Expose({ name: 'name' })
-  @Transform(t => t.obj.user.name)
-  author: string;
-  @Expose()
-  @IsEmail()
-  email: string;
+
+  @Expose({ name: 'user' })
+  @Transform(({ obj }) => obj.user)
+  @Type(() => UserInReviewDto)
+  author: UserInReviewDto;
+
+
   @Expose()
   content: string;
   @Expose()
@@ -24,24 +38,46 @@ export class ReviewResponseDto {
 }
 
 export class CreateReviewDto {
-  movieId: number;
+  @Expose()
+  @MinLength(3)
+  @MaxLength(20)
   title: string;
-  // @Transform(t => t.obj.user.name)
-  author: string;
-  @IsEmail()
-  email: string;
+
+  @ValidateNested()
+  @Exclude({ toPlainOnly: true })
+  @Type(() => UserInReviewDto)
+  author: UserInReviewDto;
+
+  @Expose()
+  @MinLength(3)
+  @MaxLength(1000)
   content: string;
+
+  @Expose()
+  @Min(1)
+  @Max(10)
   rating: number;
 }
 
 export class UpdateReviewDto {
+  @Expose()
   id: string;
-  movieId: number;
+
+  @Expose()
+  @MinLength(3)
+  @MaxLength(20)
   title: string;
-  @Expose({ name: 'name' })
-  author: string;
-  @IsEmail()
-  email: string;
+
+  @Type(() => UserInReviewDto)
+  author: UserInReviewDto;
+
+  @Expose()
+  @MinLength(3)
+  @MaxLength(1000)
   content: string;
+
+  @Expose()
+  @Min(1)
+  @Max(10)
   rating: number;
 }

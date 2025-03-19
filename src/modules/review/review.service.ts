@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { ReviewEntity } from '@modules/review/review.entity';
 import { CreateReviewDto, ReviewResponseDto } from '@modules/review/review.dto';
-import { plainToInstance } from 'class-transformer';
+import { instanceToPlain, plainToInstance } from 'class-transformer';
 import { UserService } from '@modules/user/user.service';
 import { PrismaService } from 'nestjs-prisma';
+import { Prisma } from '@prisma/client';
+import { CreateUserDto } from '@modules/user/user.dto';
 
 
 @Injectable()
@@ -21,6 +22,7 @@ export class ReviewService {
       }
     });
 
+    console.log('reviews', reviews)
     return plainToInstance(ReviewResponseDto, reviews, { excludeExtraneousValues: true });
   }
 
@@ -35,13 +37,12 @@ export class ReviewService {
     return plainToInstance(ReviewResponseDto, review, { excludeExtraneousValues: true });
   }
 
-  public async addReview(movieId: number, reviewDto: CreateReviewDto) {
-    await this.userService.addUser({
-      name: reviewDto.author,
-      email: reviewDto.email,
-    });
+  public async createReview(movieId: number, reviewDto: CreateReviewDto) {
+    await this.userService.ensureUserExists(plainToInstance(CreateUserDto, reviewDto.author));
 
-    const reviewEntity = plainToInstance(ReviewEntity, reviewDto, { excludeExtraneousValues: true });
+    const reviewEntity = instanceToPlain(reviewDto, { excludeExtraneousValues: true }) as  Prisma.ReviewCreateInput;
+    reviewEntity.movieId = movieId;
+    reviewEntity.user = { connect: { email: reviewDto.author.email }};
 
     const review = await this.prisma.review.create({
       data: reviewEntity,

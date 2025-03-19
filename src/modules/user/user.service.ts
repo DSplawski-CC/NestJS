@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto, UserResponseDto } from '@modules/user/user.dto';
-import { plainToInstance } from 'class-transformer';
-import { User } from '@prisma/client';
+import { instanceToPlain, plainToInstance } from 'class-transformer';
+import { Prisma, User } from '@prisma/client';
 import { PrismaService } from 'nestjs-prisma';
 
 
@@ -18,12 +18,24 @@ export class UserService {
     return plainToInstance(UserResponseDto, user);
   }
 
-  async addUser(createdUser: CreateUserDto) {
-    let user: User
+  async createUser(createUserDto: CreateUserDto) {
+    const createdUser = instanceToPlain(createUserDto, { excludeExtraneousValues: true }) as Prisma.UserCreateInput;
 
-    user = await this.prisma.user.create({
-      data: createdUser
+    const user = await this.prisma.user.create({
+      data: createdUser,
     })
+
+    return plainToInstance(UserResponseDto, user);
+  }
+
+  async ensureUserExists(createUserDto: CreateUserDto) {
+    const createdUser = instanceToPlain(createUserDto) as Prisma.UserCreateInput;
+
+    const user = this.prisma.user.upsert({
+      where: { email: createUserDto.email },
+      create: createdUser,
+      update: {},
+    });
 
     return plainToInstance(UserResponseDto, user);
   }

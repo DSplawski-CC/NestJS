@@ -28,6 +28,6 @@ export class ReviewController {
     @Param('movieId', ParseIntPipe) movieId: number,
     @Body() createReviewDto: CreateReviewDto,
   ): Promise<ReviewResponseDto> {
-    return this.reviewService.addReview(movieId, createReviewDto);
+    return this.reviewService.createReview(movieId, createReviewDto);
   }
 }
