@@ -22,4 +22,8 @@ model Review {
   rating    Float
   title     String
   user      User     @relation("author", fields: [email], references: [email])
+
+  @@unique([email, movieId])
+  @@index([movieId])
+  @@index([createdAt])
 }
