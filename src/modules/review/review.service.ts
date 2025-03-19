@@ -1,18 +1,23 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UseInterceptors } from '@nestjs/common';
 import { CreateReviewDto, ReviewResponseDto } from '@modules/review/review.dto';
 import { instanceToPlain, plainToInstance } from 'class-transformer';
 import { UserService } from '@modules/user/user.service';
-import { PrismaService } from 'nestjs-prisma';
 import { Prisma } from '@prisma/client';
 import { CreateUserDto } from '@modules/user/user.dto';
+import { TransactionInterceptor } from '@core/interceptors/transaction.interceptor';
+import { PrismaClientProviderService } from '@core/services/prisma-client-provider/prisma-client-provider.service';
 
 
 @Injectable()
 export class ReviewService {
   constructor(
-    private prisma: PrismaService,
+    private prismaProvider: PrismaClientProviderService,
     private readonly userService: UserService
   ) {}
+
+  get prisma() {
+    return this.prismaProvider.getClient();
+  }
 
   public async getReviews(movieId: number) {
     const reviews = await this.prisma.review.findMany({
@@ -22,7 +27,6 @@ export class ReviewService {
       }
     });
 
-    console.log('reviews', reviews)
     return plainToInstance(ReviewResponseDto, reviews, { excludeExtraneousValues: true });
   }
 
@@ -37,6 +41,7 @@ export class ReviewService {
     return plainToInstance(ReviewResponseDto, review, { excludeExtraneousValues: true });
   }
 
+  @UseInterceptors(TransactionInterceptor)
   public async createReview(movieId: number, reviewDto: CreateReviewDto) {
     await this.userService.ensureUserExists(plainToInstance(CreateUserDto, reviewDto.author));
 
