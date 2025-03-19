@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto, UserResponseDto } from '@modules/user/user.dto';
 import { instanceToPlain, plainToInstance } from 'class-transformer';
-import { Prisma, User } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { PrismaClientProviderService } from '@core/services/prisma-client-provider/prisma-client-provider.service';
 
 
 @Injectable()
 export class UserService {
-  constructor(private prismaProvider: PrismaClientProviderService) {}
+  constructor(private readonly prismaProvider: PrismaClientProviderService) {}
 
-  get prisma() {
+  private get prisma() {
     return this.prismaProvider.getClient();
   }
 

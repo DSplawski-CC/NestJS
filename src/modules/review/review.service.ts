@@ -11,11 +11,11 @@ import { PrismaClientProviderService } from '@core/services/prisma-client-provid
 @Injectable()
 export class ReviewService {
   constructor(
-    private prismaProvider: PrismaClientProviderService,
+    private readonly prismaProvider: PrismaClientProviderService,
     private readonly userService: UserService
   ) {}
 
-  get prisma() {
+  private get prisma() {
     return this.prismaProvider.getClient();
   }
 
@@ -45,7 +45,7 @@ export class ReviewService {
   public async createReview(movieId: number, reviewDto: CreateReviewDto) {
     await this.userService.ensureUserExists(plainToInstance(CreateUserDto, reviewDto.author));
 
-    const reviewEntity = instanceToPlain(reviewDto, { excludeExtraneousValues: true }) as  Prisma.ReviewCreateInput;
+    const reviewEntity = instanceToPlain(reviewDto, { excludeExtraneousValues: true }) as Prisma.ReviewCreateInput;
     reviewEntity.movieId = movieId;
     reviewEntity.user = { connect: { email: reviewDto.author.email }};
 
