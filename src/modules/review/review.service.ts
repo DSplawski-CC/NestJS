@@ -23,7 +23,7 @@ export class ReviewService {
     const reviews = await this.prisma.review.findMany({
       where: { movieId },
       include: {
-        user: true,
+        author: true,
       }
     });
 
@@ -34,7 +34,7 @@ export class ReviewService {
     const review = await this.prisma.review.findUniqueOrThrow({
       where: { movieId: movieId, id: reviewId },
       include: {
-        user: true,
+        author: true,
       }
     });
 
@@ -47,12 +47,12 @@ export class ReviewService {
 
     const reviewEntity = instanceToPlain(reviewDto, { excludeExtraneousValues: true }) as Prisma.ReviewCreateInput;
     reviewEntity.movieId = movieId;
-    reviewEntity.user = { connect: { email: reviewDto.author.email }};
+    reviewEntity.author = { connect: { email: reviewDto.author.email }};
 
     const review = await this.prisma.review.create({
       data: reviewEntity,
       include: {
-        user: true,
+        author: true,
       }
     });
 

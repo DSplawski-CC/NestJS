@@ -27,7 +27,8 @@ export class ReviewResponseDto implements Prisma.ReviewGetPayload<{}>{
   @Expose()
   userId: number;
 
-  @Transform(({ obj }) => obj.user)
+  @Expose()
+  @Transform(({ obj }) => obj.author)
   @Type(() => UserInReviewDto)
   author: UserInReviewDto;
 
@@ -42,7 +43,7 @@ export class ReviewResponseDto implements Prisma.ReviewGetPayload<{}>{
 export class CreateReviewDto {
   @Expose()
   @MinLength(3)
-  @MaxLength(20)
+  @MaxLength(30)
   title: string;
 
   @ValidateNested()
@@ -68,7 +69,7 @@ export class UpdateReviewDto {
 
   @Expose()
   @MinLength(3)
-  @MaxLength(20)
+  @MaxLength(30)
   title: string;
 
   @Type(() => UserInReviewDto)
