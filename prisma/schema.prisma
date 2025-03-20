@@ -8,22 +8,23 @@ datasource db {
 }
 
 model User {
-  email  String   @id @unique
+  id     Int      @id @default(autoincrement())
+  email  String   @unique
   name   String
-  Review Review[] @relation("author")
+  Review Review[] @relation()
 }
 
 model Review {
   id        Int      @id @default(autoincrement())
   movieId   Int
-  email     String
   content   String
   createdAt DateTime @default(now())
   rating    Float
   title     String
-  user      User     @relation("author", fields: [email], references: [email])
+  userId    Int
+  author    User     @relation(fields: [userId], references: [id])
 
-  @@unique([email, movieId])
+  @@unique([userId, movieId])
   @@index([movieId])
   @@index([createdAt])
 }

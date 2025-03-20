@@ -1,5 +1,6 @@
-import { IsEmail, Max, MaxLength, Min, MinLength, ValidateNested } from 'class-validator';
+import { IsEmail, IsInt, Max, MaxLength, Min, MinLength, ValidateNested } from 'class-validator';
 import { Exclude, Expose, Transform, Type } from 'class-transformer';
+import { Prisma } from '@prisma/client';
 
 
 export class UserInReviewDto {
@@ -15,26 +16,27 @@ export class UserInReviewDto {
   }
 }
 
-export class ReviewResponseDto {
+export class ReviewResponseDto implements Prisma.ReviewGetPayload<{}>{
   @Expose()
-  id: string;
+  id: number;
   @Expose()
   movieId: number;
   @Expose()
   title: string;
 
-  @Expose({ name: 'user' })
+  @Expose()
+  userId: number;
+
   @Transform(({ obj }) => obj.user)
   @Type(() => UserInReviewDto)
   author: UserInReviewDto;
-
 
   @Expose()
   content: string;
   @Expose()
   rating: number;
   @Expose()
-  createdAt: string;
+  createdAt: Date;
 }
 
 export class CreateReviewDto {
@@ -54,6 +56,7 @@ export class CreateReviewDto {
   content: string;
 
   @Expose()
+  @IsInt()
   @Min(1)
   @Max(10)
   rating: number;
@@ -77,6 +80,7 @@ export class UpdateReviewDto {
   content: string;
 
   @Expose()
+  @IsInt()
   @Min(1)
   @Max(10)
   rating: number;

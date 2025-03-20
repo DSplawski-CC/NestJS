@@ -14,32 +14,26 @@ export class UserService {
   }
 
   async getUser(email: string) {
-    const user = await this.prisma.user.findUniqueOrThrow({
+    return await this.prisma.user.findUniqueOrThrow({
       where: { email },
-    });
-
-    return plainToInstance(UserResponseDto, user);
+    }) as UserResponseDto;
   }
 
   async createUser(createUserDto: CreateUserDto) {
     const createdUser = instanceToPlain(createUserDto, { excludeExtraneousValues: true }) as Prisma.UserCreateInput;
 
-    const user = await this.prisma.user.create({
+    return await this.prisma.user.create({
       data: createdUser,
-    })
-
-    return plainToInstance(UserResponseDto, user);
+    }) as UserResponseDto;
   }
 
   async ensureUserExists(createUserDto: CreateUserDto) {
     const createdUser = instanceToPlain(createUserDto) as Prisma.UserCreateInput;
 
-    const user = this.prisma.user.upsert({
+    return await this.prisma.user.upsert({
       where: { email: createUserDto.email },
       create: createdUser,
       update: {},
-    });
-
-    return plainToInstance(UserResponseDto, user);
+    }) as UserResponseDto;
   }
 }

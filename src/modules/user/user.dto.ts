@@ -1,7 +1,10 @@
 import { IsEmail, MaxLength, MinLength } from 'class-validator';
+import { Prisma } from '@prisma/client';
 
 
-export class UserResponseDto {
+export class UserResponseDto implements Prisma.UserGetPayload<{}> {
+  id: number;
+
   @MinLength(3)
   @MaxLength(10)
   name: string;
@@ -10,7 +13,7 @@ export class UserResponseDto {
   email: string;
 }
 
-export class CreateUserDto {
+export class CreateUserDto implements Prisma.UserCreateInput {
   @MinLength(3)
   @MaxLength(10)
   name: string;
