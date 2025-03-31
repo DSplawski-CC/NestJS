@@ -22,6 +22,15 @@
         "tsConfigPath": "apps/gateway/tsconfig.app.json"
       }
     },
+    "movie-db": {
+      "type": "application",
+      "root": "apps/movie-db",
+      "entryFile": "main",
+      "sourceRoot": "apps/movie-db/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/movie-db/tsconfig.app.json"
+      }
+    },
     "reviews": {
       "type": "application",
       "root": "apps/reviews",

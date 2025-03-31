@@ -1,10 +1,10 @@
 import { NestFactory } from '@nestjs/core';
+import { MovieDbModule } from './movie-db.module';
+import { AppModule } from '@@review/app.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
-import { AppModule } from './app.module';
-
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(MovieDbModule);
   app.enableCors();
 
   app.connectMicroservice<MicroserviceOptions>(
@@ -12,13 +12,13 @@ async function bootstrap() {
       transport: Transport.TCP,
       options: {
         host: 'localhost',
-        port: 3012,
+        port: 3022,
       },
     },
   );
 
   await app.startAllMicroservices();
-  await app.listen(3011);
+  await app.listen(3021);
 }
 
 bootstrap();

@@ -8,9 +8,10 @@
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
-    "start:all": "npm run start:gateway & npm run start:reviews",
+    "start:all": "npm run start:gateway & npm run start:reviews & npm run start:reviews",
     "start:gateway": "nest start gateway",
     "start:reviews": "nest start reviews",
+    "start:movie-db": "nest start movie-db",
     "start:reviews-dev": "nest start reviews --watch",
     "start:reviews-debug": "nest start reviews --debug --watch",
     "start:reviews-prod": "node dist/apps/reviews/main",
