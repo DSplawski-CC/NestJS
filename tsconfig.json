@@ -8,12 +8,21 @@
     "allowSyntheticDefaultImports": true,
     "target": "ESNext",
     "sourceMap": true,
-    "outDir": "./dist",
+    "outDir": "./dist/apps/gateway",
     "baseUrl": "./",
     "paths": {
-      "@core/*": ["src/core/*"],
-      "@modules/*": ["src/modules/*"],
-      "@test/*": ["test/*"],
+      "@@gateway/*": [
+        "apps/gateway/src/*"
+      ],
+      "@@review/*": [
+        "apps/reviews/src/*"
+      ],
+      "@@shared/*": [
+        "libs/shared/src/*"
+      ],
+      "@core/*": [
+        "apps/gateway/src/core/*"
+      ]
     },
     "incremental": true,
     "skipLibCheck": true,
