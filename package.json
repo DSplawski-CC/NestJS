@@ -9,12 +9,12 @@
     "build": "nest build",
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
     "start:all": "npm run start:gateway & npm run start:reviews & npm run start:reviews",
-    "start:gateway": "nest start gateway",
-    "start:reviews": "nest start reviews",
-    "start:movie-db": "nest start movie-db",
-    "start:reviews-dev": "nest start reviews --watch",
-    "start:reviews-debug": "nest start reviews --debug --watch",
-    "start:reviews-prod": "node dist/apps/reviews/main",
+    "start:gateway": "nest build gateway --webpack --webpackPath webpack-hmr.config.js --watch",
+    "start:reviews": "nest build reviews --webpack --webpackPath webpack-hmr.config.js --watch",
+    "start:movie-db": "nest build movie-db --webpack --webpackPath webpack-hmr.config.js --watch",
+    "start:gateway-dev": "nest start gateway --watch",
+    "start:gateway-debug": "nest start gateway --debug --watch",
+    "start:gateway-prod": "node dist/apps/gateway/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -60,6 +60,7 @@
     "jest": "^29.7.0",
     "prettier": "^3.5.3",
     "prisma": "^6.5.0",
+    "run-script-webpack-plugin": "^0.2.2",
     "source-map-support": "^0.5.21",
     "supertest": "^7.0.0",
     "ts-jest": "^29.2.6",
@@ -67,7 +68,9 @@
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.8.2",
-    "typescript-eslint": "^8.26.1"
+    "typescript-eslint": "^8.26.1",
+    "webpack": "^5.98.0",
+    "webpack-node-externals": "^3.0.0"
   },
   "workspaces": [
     "apps/*"
