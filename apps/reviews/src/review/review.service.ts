@@ -3,7 +3,7 @@ import { instanceToPlain, plainToInstance } from 'class-transformer';
 import { Prisma } from '@prisma/client';
 import { PrismaClientProviderService } from '@@shared/services/prisma-client-provider/prisma-client-provider.service';
 import { CreateReviewDto, ReviewResponseDto } from '@@shared/dto/review.dto';
-import { UserService } from '../user/user.service';
+import { UserService } from '@@users/user.service';
 import { TransactionInterceptor } from '@@shared/interceptors/transaction.interceptor';
 import { CreateUserDto } from '@@shared/dto/user.dto';
 
@@ -12,7 +12,7 @@ import { CreateUserDto } from '@@shared/dto/user.dto';
 export class ReviewService {
   constructor(
     private readonly prismaProvider: PrismaClientProviderService,
-    private readonly userService: UserService
+    private readonly userService: UserService,
   ) {}
 
   private get prisma() {

@@ -10,9 +10,9 @@ interface PatternOptions {
 
 @Injectable()
 export class MicroserviceRouteService {
-  constructor(@Inject('MICROSERVICE_CLIENT') private readonly client: ClientProxy) {}
+  constructor(private readonly client: ClientProxy) {}
 
-  async send(pattern: PatternOptions, request: Request): Promise<void> {
+  async send<T extends any = any>(pattern: PatternOptions, request: Request) {
     const payload = {
       params: request.params,
       query: request.query,
@@ -20,6 +20,7 @@ export class MicroserviceRouteService {
       headers: request.headers,
     };
 
-    return lastValueFrom(this.client.send(pattern, payload));
+    return lastValueFrom(this.client.send<T>(pattern, payload));
   }
 }
+

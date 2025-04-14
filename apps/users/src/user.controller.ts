@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from '@@shared/dto/user.dto';
 import { MessagePattern } from '@nestjs/microservices';

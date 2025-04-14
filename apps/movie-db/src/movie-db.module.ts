@@ -1,10 +1,14 @@
 import { Module } from '@nestjs/common';
 import { MovieDbController } from './movie-db.controller';
-import { MovieDbService } from './movie-db.service';
+import { ClientProxyFactory } from '@nestjs/microservices';
+import { getClientOptions } from './main';
+import { MicroserviceRouteService } from '@@shared/services/microservice-route/microservice-route.service';
+
 
 @Module({
-  imports: [],
+  providers: [
+    { provide: 'MOVIE-DB_MICROSERVICE', useFactory: () => new MicroserviceRouteService(ClientProxyFactory.create(getClientOptions())) },
+  ],
   controllers: [MovieDbController],
-  providers: [MovieDbService],
 })
 export class MovieDbModule {}

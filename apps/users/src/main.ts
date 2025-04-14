@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
+import { UserModule } from './user.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
-import { AppModule } from './app.module';
 import { ClientOptions } from '@nestjs/microservices/interfaces/client-metadata.interface';
 
 
@@ -9,19 +9,20 @@ export function getClientOptions() {
     transport: Transport.TCP,
     options: {
       host: 'localhost',
-      port: 3012,
+      port: 3022,
     },
   } satisfies ClientOptions;
 }
 
+
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(UserModule);
   app.enableCors();
 
   app.connectMicroservice<MicroserviceOptions>(getClientOptions());
 
   await app.startAllMicroservices();
-  await app.listen(3011);
+  await app.listen(3021);
 }
 
 bootstrap();

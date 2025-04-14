@@ -17,6 +17,9 @@
       "@@review/*": [
         "apps/reviews/src/*"
       ],
+      "@@users/*": [
+        "apps/users/src/*"
+      ],
       "@@shared/*": [
         "libs/shared/src/*"
       ],

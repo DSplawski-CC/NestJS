@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { PrismaModule } from 'nestjs-prisma';
-import { ReviewModule } from './modules/review/review.module';
-import { MovieReviewModule } from './modules/movie-review/movie-review.module';
-import { UserModule } from './modules/user/user.module';
+import { ReviewModule } from '@@review/review/review.module';
+import { MovieReviewModule } from '@@review/movie-review/movie-review.module';
+import { UserModule } from '@@users/user.module';
 
 
 @Module({

@@ -7,6 +7,8 @@ import { AuthorizationGuard } from '@@shared/guards/authorization.guard';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
 
+declare const module: any;
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
@@ -43,6 +45,12 @@ async function bootstrap() {
 
   await app.startAllMicroservices();
   await app.listen(3000);
+
+  if (module.hot) {
+    console.log('hot reload')
+    module.hot.accept();
+    module.hot.dispose(() => app.close());
+  }
 }
 
 bootstrap();
