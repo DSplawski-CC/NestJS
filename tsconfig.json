@@ -17,11 +17,11 @@
       "@@review/*": [
         "apps/reviews/src/*"
       ],
-      "@@users/*": [
-        "apps/users/src/*"
-      ],
       "@@shared/*": [
         "libs/shared/src/*"
+      ],
+      "@@users/*": [
+        "apps/users/src/*"
       ],
       "@core/*": [
         "apps/gateway/src/core/*"
