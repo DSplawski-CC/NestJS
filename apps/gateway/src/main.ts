@@ -3,7 +3,6 @@ import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
 import { PrismaClientExceptionFilter } from 'nestjs-prisma';
-import { AuthorizationGuard } from '@@shared/guards/authorization.guard';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
 
@@ -26,7 +25,6 @@ async function bootstrap() {
   app.enableCors();
   const { httpAdapter } = app.get(HttpAdapterHost);
   app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter));
-  app.useGlobalGuards(new AuthorizationGuard());
   app.useGlobalPipes(new ValidationPipe({
     transform: true,
     whitelist: true,
