@@ -5,13 +5,15 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { IS_PUBLIC_KEY, JWT_SECRET } from '../../../../apps/auth/src/constants';
+import { IS_PUBLIC_KEY } from '../../../../apps/auth/src/constants';
 import { Reflector } from '@nestjs/core';
+import { ConfigService } from '@nestjs/config';
 
 
 @Injectable()
 export class AuthorizationGuard implements CanActivate {
   constructor(
+    private configService: ConfigService,
     private jwtService: JwtService,
     private reflector: Reflector,
   ) {}
@@ -33,7 +35,7 @@ export class AuthorizationGuard implements CanActivate {
       const payload = await this.jwtService.verifyAsync(
         token,
         {
-          secret: JWT_SECRET
+          secret: this.configService.get('JWT_SECRET'),
         }
       );
 
