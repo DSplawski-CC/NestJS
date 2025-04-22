@@ -1,11 +1,13 @@
-import { Controller, ParseIntPipe } from '@nestjs/common';
+import { Controller, ParseIntPipe, UseInterceptors } from '@nestjs/common';
 import { ReviewService } from './review.service';
 import { CreateReviewDto, ReviewResponseDto } from '@@shared/dto/review.dto';
 import { MessagePattern } from '@nestjs/microservices';
 import { PayloadBody, PayloadParam } from '@@shared/decorators/payload-extractor.decorator';
+import { PrismaRpcExceptionInterceptor } from '@@shared/interceptors/prisma-rpc-exception.interceptor';
 
 
 @Controller()
+@UseInterceptors(PrismaRpcExceptionInterceptor)
 export class ReviewController {
   constructor(private readonly reviewService: ReviewService) {}
 

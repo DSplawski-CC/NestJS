@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { AppModule } from './app.module';
 import { ClientOptions } from '@nestjs/microservices/interfaces/client-metadata.interface';
+import { PrismaRpcExceptionInterceptor } from '@@shared/interceptors/prisma-rpc-exception.interceptor';
 
 
 export function getClientOptions() {
@@ -19,6 +20,7 @@ async function bootstrap() {
   app.enableCors();
 
   app.connectMicroservice<MicroserviceOptions>(getClientOptions());
+  app.useGlobalInterceptors(new PrismaRpcExceptionInterceptor());
 
   await app.startAllMicroservices();
   await app.listen(3011);

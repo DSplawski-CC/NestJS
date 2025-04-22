@@ -4,6 +4,10 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
 import { PrismaClientExceptionFilter } from 'nestjs-prisma';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import {
+  PrismaRpcExceptionInterceptor,
+  RpcToHttpExceptionInterceptor,
+} from '@@shared/interceptors/prisma-rpc-exception.interceptor';
 
 
 declare const module: any;
@@ -23,8 +27,7 @@ async function bootstrap() {
   });
 
   app.enableCors();
-  const { httpAdapter } = app.get(HttpAdapterHost);
-  app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter));
+  app.useGlobalInterceptors(new RpcToHttpExceptionInterceptor());
   app.useGlobalPipes(new ValidationPipe({
     transform: true,
     whitelist: true,
