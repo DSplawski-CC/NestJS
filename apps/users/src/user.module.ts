@@ -1,16 +1,14 @@
 import { Module } from '@nestjs/common';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
-import { TransactionContextService } from '@@shared/services/transaction-context/transaction-context.service';
-import { PrismaClientProviderService } from '@@shared/services/prisma-client-provider/prisma-client-provider.service';
-import { PrismaModule } from 'nestjs-prisma';
+import { SharedModule } from '@@shared/shared.module';
 
 
 @Module({
   imports: [
-    PrismaModule.forRoot({ isGlobal: true }),
+    SharedModule.forRoot({ global: true }),
   ],
   controllers: [UserController],
-  providers: [UserService, TransactionContextService, PrismaClientProviderService],
+  providers: [UserService],
 })
 export class UserModule {}

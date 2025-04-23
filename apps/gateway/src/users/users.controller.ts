@@ -4,6 +4,7 @@ import { Request as RequestObject } from 'express';
 import { CreateUserDto, UserResponseDto } from '@@shared/dto/user.dto';
 import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { ValidateRequestBody } from '@@shared/decorators/request-validator.decorator';
+import { Public } from '@@gateway/auth/constants';
 
 
 @Controller('user')
@@ -16,6 +17,7 @@ export class UsersController {
     return await this.microserviceRoute.send({ cmd: 'get_user'}, request);
   }
 
+  @Public()
   @Post()
   @ApiCreatedResponse({ type: CreateUserDto, description: 'User created successfully.' })
   @ValidateRequestBody(CreateUserDto)
