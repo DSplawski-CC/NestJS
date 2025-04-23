@@ -32,13 +32,11 @@ export class AuthorizationGuard implements CanActivate {
     const token = String(this.extractTokenFromHeader(request));
     const secret = this.configService.get('JWT_SECRET');
 
-    console.log('token', token);
-    console.log('secret', secret);
     try {
       const payload = await this.jwtService.verifyAsync(
         token,
         {
-          secret: this.configService.get('JWT_SECRET'),
+          secret: secret,
         }
       );
 
