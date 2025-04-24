@@ -7,5 +7,9 @@ import { MOVIE_DB } from './constants';
 export class MovieDbService {
   @Inject(MOVIE_DB) movieDb: MovieDb;
 
-
+  public async moviesPopular(page?: number) {
+    return await this.movieDb.moviePopular({
+      page: page,
+    });
+  }
 }

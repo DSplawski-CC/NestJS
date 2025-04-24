@@ -4,6 +4,7 @@ import { UsersModule } from './users/users.module';
 import { MovieReviewModule } from './movie-review/movie-review.module';
 import { SharedModule } from '@@shared/shared.module';
 import { AuthModule } from '@@gateway/auth/auth.module';
+import { MovieDbModule } from './movie-db/movie-db.module';
 
 
 @Module({
@@ -13,6 +14,7 @@ import { AuthModule } from '@@gateway/auth/auth.module';
     ReviewsModule,
     UsersModule,
     MovieReviewModule,
+    MovieDbModule,
   ],
 })
 export class AppModule {}

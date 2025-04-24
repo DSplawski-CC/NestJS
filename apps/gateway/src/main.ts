@@ -1,11 +1,9 @@
-import { HttpAdapterHost, NestFactory } from '@nestjs/core';
+import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
-import { PrismaClientExceptionFilter } from 'nestjs-prisma';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import {
-  PrismaRpcExceptionInterceptor,
   RpcToHttpExceptionInterceptor,
 } from '@@shared/interceptors/prisma-rpc-exception.interceptor';
 

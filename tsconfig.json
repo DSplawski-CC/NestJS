@@ -23,6 +23,9 @@
       "@@users/*": [
         "apps/users/src/*"
       ],
+      "@@movies/*": [
+        "apps/movie-db/src/*"
+      ],
       "@core/*": [
         "apps/gateway/src/core/*"
       ]
