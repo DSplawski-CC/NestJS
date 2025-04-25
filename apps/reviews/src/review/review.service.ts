@@ -1,10 +1,9 @@
-import { Injectable, UseInterceptors } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { instanceToPlain, plainToInstance } from 'class-transformer';
 import { Prisma } from '@prisma/client';
 import { PrismaClientProviderService } from '@@shared/services/prisma-client-provider/prisma-client-provider.service';
 import { CreateReviewDto, ReviewResponseDto } from '@@shared/dto/review.dto';
 import { UserService } from '@@users/user.service';
-import { TransactionInterceptor } from '@@shared/interceptors/transaction.interceptor';
 import { CreateUserDto } from '@@shared/dto/user.dto';
 
 
@@ -41,10 +40,8 @@ export class ReviewService {
     return plainToInstance(ReviewResponseDto, review, { excludeExtraneousValues: true });
   }
 
-  @UseInterceptors(TransactionInterceptor)
-  public async createReview(movieId: number, reviewDto: CreateReviewDto) {
-    await this.userService.ensureUserExists(plainToInstance(CreateUserDto, reviewDto.author));
 
+  public async createReview(movieId: number, reviewDto: CreateReviewDto) {
     const reviewEntity = instanceToPlain(reviewDto, { excludeExtraneousValues: true }) as Prisma.ReviewCreateInput;
     reviewEntity.movieId = movieId;
     reviewEntity.author = { connect: { email: reviewDto.author.email }};
