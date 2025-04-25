@@ -12,4 +12,14 @@ export class MovieDbService {
       page: page,
     });
   }
+
+  public async getMovie(movieId: number) {
+    return await this.movieDb.movieInfo({
+      id: movieId,
+    });
+  }
+
+  public async getMovies(...movieIds: number[]) {
+    return await Promise.all(movieIds.map(movieId => this.getMovie(movieId)));
+  }
 }

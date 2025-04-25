@@ -10,7 +10,7 @@ export class MovieReviewService {
     return this.prismaProvider.getClient();
   }
 
-  public async getTopMoviesIdsByRating(count?: number) {
+  public async  getTopMoviesIdsByRating(count?: number) {
     const result = await this.prisma.review.groupBy({
       by: 'movieId',
       _avg: {

@@ -4,6 +4,8 @@ import { Request } from 'express';
 import { lastValueFrom } from 'rxjs';
 
 
+export type MicroServiceRequest = Pick<Request, 'params' | 'query' | 'body' | 'headers'>
+
 interface PatternOptions {
   cmd: string;
 }
@@ -12,8 +14,8 @@ interface PatternOptions {
 export class MicroserviceRouteService {
   constructor(private readonly client: ClientProxy) {}
 
-  async send<T extends any = any>(pattern: PatternOptions, request: Request) {
-    const payload = {
+  async send<T extends any = any>(pattern: PatternOptions, request: MicroServiceRequest) {
+    const payload: MicroServiceRequest = {
       params: request.params,
       query: request.query,
       body: request.body,
