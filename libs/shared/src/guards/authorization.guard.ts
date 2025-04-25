@@ -40,6 +40,8 @@ export class AuthorizationGuard implements CanActivate {
         }
       );
 
+      console.log(payload);
+
       request['user'] = payload;
     } catch {
       throw new UnauthorizedException();
