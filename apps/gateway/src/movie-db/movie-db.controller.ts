@@ -11,4 +11,9 @@ export class MovieDbController {
   public async getMoviesPopular(@Request() request: RequestObject) {
     return await this.microserviceRoute.send({ cmd: 'get-movies-popular'}, request);
   }
+
+  @Get(':movieId')
+  public async getMovieInfo(@Request() request: RequestObject) {
+    return await this.microserviceRoute.send({ cmd: 'get-movie-info'}, request);
+  }
 }
