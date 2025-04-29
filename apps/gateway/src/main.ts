@@ -24,7 +24,11 @@ async function bootstrap() {
     jsonDocumentUrl: 'swagger/json',
   });
 
-  app.enableCors();
+  app.enableCors({
+    origin: 'http://localhost:4200',
+    preflightContinue: false,
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  });
   app.useGlobalInterceptors(new RpcToHttpExceptionInterceptor());
   app.useGlobalPipes(new ValidationPipe({
     transform: true,
