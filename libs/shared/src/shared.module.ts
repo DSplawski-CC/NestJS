@@ -1,12 +1,12 @@
 import { DynamicModule, Module } from '@nestjs/common';
 import { SharedService } from './shared.service';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { APP_GUARD } from '@nestjs/core';
-import { AuthorizationGuard } from '@@shared/guards/authorization.guard';
 import { TransactionContextService } from '@@shared/services/transaction-context/transaction-context.service';
 import { PrismaClientProviderService } from '@@shared/services/prisma-client-provider/prisma-client-provider.service';
 import { PrismaModule } from 'nestjs-prisma';
+import { JwtAuthGuard } from '@@gateway/auth/jwt-auth.guard';
 
 @Module({})
 export class SharedModule {
@@ -19,13 +19,8 @@ export class SharedModule {
         ConfigModule.forRoot({
           isGlobal: true,
         }),
-        JwtModule.registerAsync({
-          inject: [ConfigService],
-          useFactory: async (configService: ConfigService) => ({
-            global: true,
-            secret: configService.get('JWT_SECRET'),
-            signOptions: { expiresIn: '300s' },
-          }),
+        JwtModule.register({
+          global: true,
         }),
       ],
       providers: [
@@ -33,7 +28,7 @@ export class SharedModule {
         SharedService,
         {
           provide: APP_GUARD,
-          useClass: AuthorizationGuard,
+          useClass: JwtAuthGuard,
         },
       ],
       exports: [SharedService, TransactionContextService, PrismaClientProviderService, JwtModule],

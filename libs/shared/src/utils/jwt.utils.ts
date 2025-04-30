@@ -6,10 +6,12 @@ export interface JwtPayload {
   email: string;
 }
 
-export function createJwtPayload(userFullDto: UserFullResponseDto): JwtPayload {
+type UserJwtData = Pick<UserFullResponseDto, 'id' | 'name' | 'email'>;
+
+export function createJwtPayload(userData: UserJwtData): JwtPayload {
   return {
-    sub: userFullDto.id,
-    username: userFullDto.name,
-    email: userFullDto.email
+    sub: userData.id,
+    username: userData.name,
+    email: userData.email
   };
 }

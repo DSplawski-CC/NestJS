@@ -1,8 +1,8 @@
-import { Body, Controller, Inject, Post } from '@nestjs/common';
+import { Body, Controller, Inject, Post, Request } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ApiOkResponse } from '@nestjs/swagger';
 import { LoginDto } from '@@shared/dto/login.dto';
-import { Public } from './constants';
+import { Public } from '@@gateway/auth/constants';
 
 
 @Controller('auth')
@@ -13,7 +13,12 @@ export class AuthController {
   @Public()
   @Post('login')
   @ApiOkResponse()
-  signIn(@Body() loginDto: LoginDto) {
-    return this.authService.signIn(loginDto);
+  signIn(@Request() req: any) {
+    return this.authService.signIn(req.user as LoginDto);
+  }
+
+  @Post('logout')
+  async logout(@Request() req) {
+    return req.user;
   }
 }

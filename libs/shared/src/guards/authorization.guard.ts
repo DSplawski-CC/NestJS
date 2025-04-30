@@ -30,7 +30,7 @@ export class AuthorizationGuard implements CanActivate {
 
     const request = context.switchToHttp().getRequest();
     const token = String(this.extractTokenFromHeader(request));
-    const secret = this.configService.get('JWT_SECRET');
+    const secret = this.configService.get('JWT_ACCESS_SECRET');
 
     try {
       const payload = await this.jwtService.verifyAsync(
