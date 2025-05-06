@@ -6,8 +6,15 @@ import { IS_PUBLIC_KEY } from '@@gateway/auth/constants';
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
-  constructor(private reflector: Reflector) {
-    super();
+  constructor(private readonly reflector: Reflector) {
+    super({
+
+    });
+  }
+
+  handleRequest(err, user, info, context: ExecutionContext, status) {
+    const handle = super.handleRequest(err, user, info, context);
+    return handle;
   }
 
   canActivate(context: ExecutionContext) {
@@ -19,6 +26,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     if (isPublic) {
       return true;
     }
+
     return super.canActivate(context);
   }
 }

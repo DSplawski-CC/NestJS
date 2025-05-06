@@ -18,6 +18,7 @@ export class SharedModule {
         PrismaModule.forRoot({ isGlobal: true }),
         ConfigModule.forRoot({
           isGlobal: true,
+          envFilePath: `${process.cwd()}\\${(process.env.NODE_ENV as string).trim()}.env`,
         }),
         JwtModule.register({
           global: true,
@@ -31,7 +32,13 @@ export class SharedModule {
           useClass: JwtAuthGuard,
         },
       ],
-      exports: [SharedService, TransactionContextService, PrismaClientProviderService, JwtModule],
+      exports: [
+        SharedService,
+        TransactionContextService,
+        PrismaClientProviderService,
+        JwtModule,
+        ConfigModule,
+      ],
     }
   }
 }

@@ -15,7 +15,7 @@ import { JwtStrategy } from '@@gateway/auth/jwt.strategy';
   imports: [UsersModule, PassportModule],
   controllers: [AuthController],
   providers: [
-    // UserService,
+    UserService,
     AuthService,
     {
       provide: 'USER_MICROSERVICE',

@@ -6,6 +6,12 @@ export interface JwtPayload {
   email: string;
 }
 
+export interface JwtTokenMeta {
+  exp: number;
+}
+
+export interface JwtToken extends JwtPayload, JwtTokenMeta {}
+
 type UserJwtData = Pick<UserFullResponseDto, 'id' | 'name' | 'email'>;
 
 export function createJwtPayload(userData: UserJwtData): JwtPayload {
