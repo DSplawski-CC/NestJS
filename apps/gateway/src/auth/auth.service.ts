@@ -3,7 +3,7 @@ import { UserService } from '@@users/user.service';
 import * as bcrypt from 'bcrypt';
 import { LoginDto } from '@@shared/dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
-import { createJwtPayload, JwtPayload, JwtToken } from '@@shared/utils/jwt.utils';
+import { createJwtPayload, getExpirationDate, JwtPayload, JwtToken } from '@@shared/utils/jwt.utils';
 import { ConfigService } from '@nestjs/config';
 import { TokensDto } from '@@shared/dto/token.dto';
 import { PrismaClientProviderService } from '@@shared/services/prisma-client-provider/prisma-client-provider.service';
@@ -71,8 +71,8 @@ export class AuthService {
 
   async saveRefreshToken(userId: number, token: string, userAgent: string) {
     const hashed = await bcrypt.hash(token, 10);
-    const expiresIn = this.jwtService.decode<JwtToken>(token).exp;
-    const expiresAt = new Date(Date.now() + expiresIn * 1000);
+    const jwtToken = this.jwtService.decode<JwtToken>(token)
+    const expiresAt = getExpirationDate(jwtToken);
 
     return this.prisma.refreshToken.create({
       data: {

@@ -8,6 +8,7 @@ export interface JwtPayload {
 
 export interface JwtTokenMeta {
   exp: number;
+  iat: number;
 }
 
 export interface JwtToken extends JwtPayload, JwtTokenMeta {}
@@ -20,4 +21,12 @@ export function createJwtPayload(userData: UserJwtData): JwtPayload {
     username: userData.name,
     email: userData.email
   };
+}
+
+export function getExpirationDate(jwtToken: JwtToken): Date {
+  return new Date(getExpirationTime(jwtToken));
+}
+
+export function getExpirationTime(jwtToken: JwtToken): number {
+  return jwtToken.exp * 1000;
 }
