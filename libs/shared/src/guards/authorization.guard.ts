@@ -8,6 +8,7 @@ import { JwtService } from '@nestjs/jwt';
 import { IS_PUBLIC_KEY } from '@@gateway/auth/constants';
 import { Reflector } from '@nestjs/core';
 import { ConfigService } from '@nestjs/config';
+import { JwtToken } from '@@shared/utils/jwt.utils';
 
 
 @Injectable()
@@ -33,7 +34,7 @@ export class AuthorizationGuard implements CanActivate {
     const secret = this.configService.get('JWT_ACCESS_SECRET');
 
     try {
-      const payload = await this.jwtService.verifyAsync(
+      const payload = await this.jwtService.verifyAsync<JwtToken>(
         token,
         {
           secret: secret,

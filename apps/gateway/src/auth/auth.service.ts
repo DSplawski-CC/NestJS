@@ -3,10 +3,11 @@ import { UserService } from '@@users/user.service';
 import * as bcrypt from 'bcrypt';
 import { LoginDto } from '@@shared/dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
-import { createJwtPayload, JwtPayload } from '@@shared/utils/jwt.utils';
+import { createJwtPayload, JwtPayload, JwtToken } from '@@shared/utils/jwt.utils';
 import { ConfigService } from '@nestjs/config';
 import { TokensDto } from '@@shared/dto/token.dto';
 import { PrismaClientProviderService } from '@@shared/services/prisma-client-provider/prisma-client-provider.service';
+import { pick } from 'lodash';
 
 
 @Injectable()
@@ -70,8 +71,7 @@ export class AuthService {
 
   async saveRefreshToken(userId: number, token: string, userAgent: string) {
     const hashed = await bcrypt.hash(token, 10);
-    // const expiresIn = this.configService.get<number>('JWT_REFRESH_EXPIRATION_TIME')!;
-    const expiresIn = this.jwtService.decode(token).exp;
+    const expiresIn = this.jwtService.decode<JwtToken>(token).exp;
     const expiresAt = new Date(Date.now() + expiresIn * 1000);
 
     return this.prisma.refreshToken.create({
@@ -86,7 +86,8 @@ export class AuthService {
   }
 
   async refresh(refreshToken: string, userAgent: string) {
-    const payload = this.jwtService.verify<JwtPayload>(refreshToken, { secret: this.configService.get<string>('JWT_REFRESH_SECRET') });
+    const jwtToken = this.jwtService.verify<JwtToken>(refreshToken, { secret: this.configService.get<string>('JWT_REFRESH_SECRET') });
+    const payload = pick(jwtToken, 'sub', 'email', 'username');
     const tokenDto = await this.getUserTokenData(payload.sub, refreshToken);
 
     if (!tokenDto) {

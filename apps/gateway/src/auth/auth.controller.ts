@@ -27,7 +27,7 @@ export class AuthController {
       maxAge: this.jwtService.decode<JwtToken>(refreshToken).exp,
     })
 
-    return { accessToken: accessToken };
+    return { accessToken };
   }
 
   @Post('refresh')

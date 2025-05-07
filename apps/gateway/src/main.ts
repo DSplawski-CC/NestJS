@@ -6,6 +6,7 @@ import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import {
   RpcToHttpExceptionInterceptor,
 } from '@@shared/interceptors/prisma-rpc-exception.interceptor';
+const cookieParser = require('cookie-parser');
 
 
 declare const module: any;
@@ -29,6 +30,7 @@ async function bootstrap() {
     preflightContinue: false,
     allowedHeaders: ['Content-Type', 'Authorization'],
   });
+  app.use(cookieParser());
   app.useGlobalInterceptors(new RpcToHttpExceptionInterceptor());
   app.useGlobalPipes(new ValidationPipe({
     transform: true,

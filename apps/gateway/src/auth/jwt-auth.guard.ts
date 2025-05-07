@@ -13,8 +13,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
   }
 
   handleRequest(err, user, info, context: ExecutionContext, status) {
-    const handle = super.handleRequest(err, user, info, context);
-    return handle;
+    return super.handleRequest(err, user, info, context);
   }
 
   canActivate(context: ExecutionContext) {
