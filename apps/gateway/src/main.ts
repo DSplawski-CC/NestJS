@@ -7,12 +7,33 @@ import {
   RpcToHttpExceptionInterceptor,
 } from '@@shared/interceptors/prisma-rpc-exception.interceptor';
 const cookieParser = require('cookie-parser');
+import * as fs from 'fs';
+import { join } from 'path';
+import { HttpsOptions } from '@nestjs/common/interfaces/external/https-options.interface';
 
 
 declare const module: any;
 
+function getSslConfiguration() {
+  const isProd = process.env.NODE_ENV === 'production';
+  const sslPath = isProd
+    ? join(__dirname, 'ssl')
+    : join(__dirname, '../../../ssl');
+
+  return {
+    key: fs.readFileSync(join(sslPath, 'api.app.local.key')),
+    cert: fs.readFileSync(join(sslPath, 'api.app.local.crt')),
+  } satisfies HttpsOptions;
+}
+
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+
+
+  const app = await NestFactory.create(AppModule, {
+    httpsOptions: {
+      ...getSslConfiguration(),
+    }
+  });
 
   const config = new DocumentBuilder()
     .setTitle('Movies DB')
@@ -26,7 +47,7 @@ async function bootstrap() {
   });
 
   app.enableCors({
-    origin: 'http://localhost:4200',
+    origin: 'https://app.local:4200',
     preflightContinue: false,
     allowedHeaders: ['Content-Type', 'Authorization'],
   });
@@ -41,7 +62,7 @@ async function bootstrap() {
     {
       transport: Transport.TCP,
       options: {
-        host: 'localhost',
+        host: process.env.DOMAIN,
         port: 3001,
       },
     },

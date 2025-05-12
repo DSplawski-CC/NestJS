@@ -6,8 +6,8 @@ type TokenCookieOptions = Pick<CookieOptions, 'secure' | 'maxAge'>
 export function setRefreshTokenCookie(res: Response, token: string, tokenCookieOptions:  TokenCookieOptions) {
   res.cookie('refresh_token', token, {
     httpOnly: true,
-    // secure: tokenCookieOptions?.secure ?? true,
-    secure: false,
+    secure: tokenCookieOptions?.secure,
+    domain: process.env.DOMAIN,
     sameSite: 'strict',
     path: '/',
     maxAge: tokenCookieOptions?.maxAge ?? 0,
@@ -15,5 +15,9 @@ export function setRefreshTokenCookie(res: Response, token: string, tokenCookieO
 }
 
 export function clearRefreshTokenCookie(res: Response) {
-  res.clearCookie('refresh_token', { path: '/' });
+  res.clearCookie('refresh_token',
+    {
+      path: '/',
+      domain: process.env.DOMAIN,
+    });
 }

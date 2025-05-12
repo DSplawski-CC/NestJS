@@ -18,7 +18,7 @@ export class SharedModule {
         PrismaModule.forRoot({ isGlobal: true }),
         ConfigModule.forRoot({
           isGlobal: true,
-          envFilePath: `${process.cwd()}\\${(process.env.NODE_ENV as string).trim()}.env`,
+          envFilePath: `.env.${(process.env.NODE_ENV as string)}`,
         }),
         JwtModule.register({
           global: true,

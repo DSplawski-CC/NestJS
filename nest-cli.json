@@ -3,6 +3,12 @@
   "collection": "@nestjs/schematics",
   "sourceRoot": "apps/gateway/src",
   "compilerOptions": {
+    "assets": [
+      {
+        "include": "../../ssl/*",
+        "outDir": "dist/apps/gateway/ssl"
+      }
+    ],
     "deleteOutDir": true,
     "plugins": [
       "@nestjs/swagger"
