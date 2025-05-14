@@ -86,15 +86,15 @@ export class AuthService {
   }
 
   async refresh(refreshToken: string, userAgent: string) {
-    const jwtToken = this.jwtService.verify<JwtToken>(refreshToken, { secret: this.configService.get<string>('JWT_REFRESH_SECRET') });
+    const jwtToken = await this.jwtService.verifyAsync<JwtToken>(refreshToken, { secret: this.configService.get<string>('JWT_REFRESH_SECRET') });
     const payload = pick(jwtToken, 'sub', 'email', 'username');
-    const tokenDto = await this.getUserTokenData(payload.sub, refreshToken);
+    const oldTokenDto = await this.getUserTokenData(payload.sub, refreshToken);
 
-    if (!tokenDto) {
+    if (!oldTokenDto) {
       throw new ForbiddenException('Invalid refresh token');
     }
 
-    await this.revokeToken(tokenDto.id);
+    await this.revokeToken(oldTokenDto.id);
     const { accessToken, refreshToken: newRefreshToken } = await this.getToken(payload);
     await this.saveRefreshToken(payload.sub, newRefreshToken, userAgent);
 

@@ -9,7 +9,7 @@ export function getClientOptions() {
   return {
     transport: Transport.TCP,
     options: {
-      host: process.env.DOMAIN,
+      host: `api.${process.env.DOMAIN}`,
       port: 3012,
     },
   } satisfies ClientOptions;

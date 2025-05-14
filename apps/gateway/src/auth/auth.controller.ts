@@ -7,7 +7,7 @@ import { Response, Request } from 'express';
 import { clearRefreshTokenCookie, setRefreshTokenCookie } from '@@shared/utils/cookie.utils';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { JwtPayload, JwtToken } from '@@shared/utils/jwt.utils';
+import { JwtToken } from '@@shared/utils/jwt.utils';
 
 
 @Controller('auth')
@@ -22,14 +22,16 @@ export class AuthController {
   @ApiOkResponse()
   async signIn(@Body() loginDto: LoginDto, @Headers('user-agent') userAgent: string, @Res({ passthrough: true }) response: Response) {
     const { accessToken, refreshToken } = await this.authService.signIn(loginDto, userAgent);
+    const { exp } = this.jwtService.decode<JwtToken>(refreshToken);
     setRefreshTokenCookie(response, refreshToken, {
       secure: this.configService.get<boolean>('TOKEN_COOKIE_SECURE'),
-      maxAge: this.jwtService.decode<JwtToken>(refreshToken).exp,
-    })
+      expires: new Date(exp * 1000),
+    });
 
     return { accessToken };
   }
 
+  @Public()
   @Post('refresh')
   async refresh(@Req() req: Request, @Headers('user-agent') userAgent: string,  @Res({ passthrough: true }) res: Response) {
     const token = req.cookies['refresh_token'];
@@ -39,10 +41,13 @@ export class AuthController {
     }
 
     const { accessToken, refreshToken: newRefreshToken } = await this.authService.refresh(token, userAgent);
+    const { exp } = this.jwtService.decode<JwtToken>(newRefreshToken);
+
     setRefreshTokenCookie(res, newRefreshToken, {
       secure: this.configService.get<boolean>('TOKEN_COOKIE_SECURE'),
-      maxAge: this.jwtService.decode<JwtToken>(newRefreshToken).exp,
+      expires: new Date(exp * 1000),
     });
+
     return { accessToken };
   }
 

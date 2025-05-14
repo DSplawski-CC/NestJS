@@ -2,14 +2,13 @@ import { NestFactory } from '@nestjs/core';
 import { UserModule } from './user.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { ClientOptions } from '@nestjs/microservices/interfaces/client-metadata.interface';
-import { PrismaRpcExceptionInterceptor } from '@@shared/interceptors/prisma-rpc-exception.interceptor';
 
 
 export function getClientOptions() {
   return {
     transport: Transport.TCP,
     options: {
-      host: process.env.DOMAIN,
+      host: `api.${process.env.DOMAIN}`,
       port: 3022,
     },
   } satisfies ClientOptions;

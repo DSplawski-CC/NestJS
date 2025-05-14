@@ -48,6 +48,7 @@ async function bootstrap() {
 
   app.enableCors({
     origin: 'https://app.local:4200',
+    credentials: true,
     preflightContinue: false,
     allowedHeaders: ['Content-Type', 'Authorization'],
   });
@@ -62,7 +63,7 @@ async function bootstrap() {
     {
       transport: Transport.TCP,
       options: {
-        host: process.env.DOMAIN,
+        host: `api.${process.env.DOMAIN}`,
         port: 3001,
       },
     },
