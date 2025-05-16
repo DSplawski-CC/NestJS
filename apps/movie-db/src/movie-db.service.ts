@@ -1,11 +1,17 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { MovieDb } from 'moviedb-promise';
 import { MOVIE_DB } from './constants';
+import { PrismaClientProviderService } from '@@shared/services/prisma-client-provider/prisma-client-provider.service';
 
 
 @Injectable()
 export class MovieDbService {
   @Inject(MOVIE_DB) movieDb: MovieDb;
+  @Inject() prismaProvider: PrismaClientProviderService;
+
+  private get prisma() {
+    return this.prismaProvider.getClient();
+  }
 
   public async moviesPopular(page?: number) {
     return await this.movieDb.moviePopular({
@@ -21,5 +27,13 @@ export class MovieDbService {
 
   public async getMovies(...movieIds: number[]) {
     return await Promise.all(movieIds.map(movieId => this.getMovie(movieId)));
+  }
+
+  public async getMovieImages(movieId: number) {
+    return await this.prisma.movie.findMany({
+      where: {
+        id: movieId,
+      }
+    });
   }
 }

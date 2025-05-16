@@ -19,7 +19,7 @@ export function createJwtPayload(userData: UserJwtData): JwtPayload {
   return {
     sub: userData.id,
     username: userData.name,
-    email: userData.email
+    email: userData.email,
   };
 }
 

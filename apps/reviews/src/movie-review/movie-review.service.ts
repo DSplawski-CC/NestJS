@@ -4,13 +4,15 @@ import { PrismaClientProviderService } from '@@shared/services/prisma-client-pro
 
 @Injectable()
 export class MovieReviewService {
-  constructor(private readonly prismaProvider: PrismaClientProviderService) {}
+  constructor(
+    private readonly prismaProvider: PrismaClientProviderService,
+  ) {}
 
   private get prisma() {
     return this.prismaProvider.getClient();
   }
 
-  public async  getTopMoviesIdsByRating(count?: number) {
+  public async getTopMoviesIdsByRating(count?: number) {
     const result = await this.prisma.review.groupBy({
       by: 'movieId',
       _avg: {

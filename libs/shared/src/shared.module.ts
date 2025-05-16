@@ -7,8 +7,11 @@ import { TransactionContextService } from '@@shared/services/transaction-context
 import { PrismaClientProviderService } from '@@shared/services/prisma-client-provider/prisma-client-provider.service';
 import { PrismaModule } from 'nestjs-prisma';
 import { JwtAuthGuard } from '@@gateway/auth/jwt-auth.guard';
+import { ImageKitService } from './services/image-kit/image-kit.service';
 
-@Module({})
+@Module({
+  providers: [ImageKitService]
+})
 export class SharedModule {
   static forRoot(options?: SharedModuleOptions): DynamicModule {
     return {

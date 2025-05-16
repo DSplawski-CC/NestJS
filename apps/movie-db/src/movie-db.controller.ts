@@ -15,11 +15,16 @@ export class MovieDbController {
 
   @MessagePattern({cmd: 'get-movie-info'})
   public async getMovie(@PayloadParam('movieId', new ParseIntPipe()) movieId: number) {
-    return await this.movieDbService.getMovie(movieId);
+    return (await this.movieDbService.getMovie(movieId));
   }
 
   @MessagePattern({cmd: 'get-movies-info'})
   public async getMovies(@PayloadBody() movieIds: number[]) {
     return await this.movieDbService.getMovies(...movieIds);
+  }
+
+  @MessagePattern({cmd: 'get-movie-images'})
+  public async getMovieImages(@PayloadParam('movieId', new ParseIntPipe()) movieId: number) {
+    return await this.movieDbService.getMovieImages(movieId);
   }
 }

@@ -48,3 +48,16 @@ model RefreshToken {
   @@map("refresh_tokens")
 }
 
+model Movie {
+  id          Int      @id @default(autoincrement())
+  movieId     Int
+  fileUrl    String
+  fileId     String   @unique
+  userId      Int
+  uploadedAt DateTime @default(now())
+
+  @@index([id])
+  @@index([userId])
+  @@index([movieId])
+}
+
