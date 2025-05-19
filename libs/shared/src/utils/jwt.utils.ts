@@ -1,4 +1,5 @@
 import { UserFullResponseDto } from '@@shared/dto/user.dto';
+import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 
 export interface JwtPayload {
   sub: number;
@@ -30,3 +31,9 @@ export function getExpirationDate(jwtToken: JwtToken): Date {
 export function getExpirationTime(jwtToken: JwtToken): number {
   return jwtToken.exp * 1000;
 }
+
+export const GetUser = createParamDecorator(
+  (param: string | undefined, ctx: ExecutionContext) => {
+    return ctx.switchToHttp().getRequest().user;
+  }
+)
