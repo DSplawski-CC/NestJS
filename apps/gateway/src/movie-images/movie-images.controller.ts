@@ -31,7 +31,6 @@ export class MovieImagesController {
     @UploadedFile() file: Express.Multer.File,
     @Param('movieId', ParseIntPipe) movieId: number,
   ) {
-    console.log(user);
     const imageMetaData = await this.imagekitService.uploadFile(
       file,
       `/${movieId}`,
