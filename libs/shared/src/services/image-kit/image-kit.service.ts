@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import ImageKit from 'imagekit';
 import { PrismaClientProviderService } from '@@shared/services/prisma-client-provider/prisma-client-provider.service';
 import { UploadResponse }  from 'imagekit/dist/libs/interfaces/UploadResponse';
@@ -6,13 +6,15 @@ import { UploadResponse }  from 'imagekit/dist/libs/interfaces/UploadResponse';
 
 @Injectable()
 export class ImageKitService {
-  public readonly imageKit = new ImageKit({
+  private readonly imageKit = new ImageKit({
     publicKey: process.env.IMAGEKIT_PUBLIC_KEY as string,
     privateKey: process.env.IMAGEKIT_PRIVATE_KEY as string,
     urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT as string,
   });
 
-  constructor(private readonly prismaProvider: PrismaClientProviderService) {}
+  @Inject() private readonly prismaProvider: PrismaClientProviderService;
+
+  constructor() {}
 
   private get prisma() {
     return this.prismaProvider.getClient();

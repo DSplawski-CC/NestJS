@@ -10,7 +10,6 @@ import { JwtAuthGuard } from '@@gateway/auth/jwt-auth.guard';
 import { ImageKitService } from './services/image-kit/image-kit.service';
 
 @Module({
-  providers: [ImageKitService]
 })
 export class SharedModule {
   static forRoot(options?: SharedModuleOptions): DynamicModule {
@@ -30,6 +29,7 @@ export class SharedModule {
       providers: [
         TransactionContextService, PrismaClientProviderService,
         SharedService,
+        ImageKitService,
         {
           provide: APP_GUARD,
           useClass: JwtAuthGuard,
@@ -39,6 +39,7 @@ export class SharedModule {
         SharedService,
         TransactionContextService,
         PrismaClientProviderService,
+        ImageKitService,
         JwtModule,
         ConfigModule,
       ],
