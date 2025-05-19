@@ -16,7 +16,7 @@ export class MovieReviewController {
 
   @Get('top')
   public async getTop(@Request() request: RequestObject) {
-    const movies: { [movieId: number]: number} = await this.movieReviewMicroserviceRoute.send({ cmd: 'get-top' }, request);
+    const movies: { [movieId: number]: number } = await this.movieReviewMicroserviceRoute.send({ cmd: 'get-top' }, request);
     const movieIds = Object.keys(movies).map(movieId => Number(movieId));
     const movieDbRequest: MicroServiceRequest = {
       ...request,

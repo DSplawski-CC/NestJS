@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import { Expose } from 'class-transformer';
 
 
@@ -11,7 +12,7 @@ export class MovieImageDto implements Prisma.MovieGetPayload<{}> {
   @Expose()
   fileId: string;
   @Expose()
-  userId: string;
+  userId: number;
   @Expose()
   uploadedAt: Date;
 }
