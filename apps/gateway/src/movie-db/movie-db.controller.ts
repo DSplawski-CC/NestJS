@@ -16,4 +16,9 @@ export class MovieDbController {
   public async getMovieInfo(@Request() request: RequestObject) {
     return await this.microserviceRoute.send({ cmd: 'get-movie-info'}, request);
   }
+
+  @Get(':movieId/images')
+  public async getMovieImages(@Request() request: RequestObject) {
+    return await this.microserviceRoute.send({ cmd: 'get-movie-images'}, request);
+  }
 }

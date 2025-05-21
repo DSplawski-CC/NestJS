@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import ImageKit from 'imagekit';
 import { PrismaClientProviderService } from '@@shared/services/prisma-client-provider/prisma-client-provider.service';
 import { UploadResponse }  from 'imagekit/dist/libs/interfaces/UploadResponse';
+import { FileObject, ListFileResponse } from 'imagekit/dist/libs/interfaces';
 
 
 @Injectable()
@@ -34,5 +35,12 @@ export class ImageKitService {
       useUniqueFileName: true,
       overwriteFile: false,
     });
+  }
+
+  async getFileUrls(folder: string): Promise<string[]> {
+    return await this.imageKit.listFiles({
+      fileType: 'image',
+      path: folder,
+    }).then((result: ListFileResponse) => result.map((file: FileObject) => file.url));
   }
 }
