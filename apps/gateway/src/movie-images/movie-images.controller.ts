@@ -45,6 +45,6 @@ export class MovieImagesController {
       },
     });
 
-    return image;
+    return imageMetaData.url;
   }
 }

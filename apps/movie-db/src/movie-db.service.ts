@@ -1,7 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { MovieDb } from 'moviedb-promise';
 import { MOVIE_DB } from './constants';
-import { PrismaClientProviderService } from '@@shared/services/prisma-client-provider/prisma-client-provider.service';
 import { ImageKitService } from '@@shared/services/image-kit/image-kit.service';
 
 
