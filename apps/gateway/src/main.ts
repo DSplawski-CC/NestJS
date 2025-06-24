@@ -47,7 +47,10 @@ async function bootstrap() {
   });
 
   app.enableCors({
-    origin: 'https://app.local:4200',
+    origin: [
+      'https://app.local:4200',
+      'https://app.local:5173',
+    ],
     credentials: true,
     preflightContinue: false,
     allowedHeaders: ['Content-Type', 'Authorization'],
